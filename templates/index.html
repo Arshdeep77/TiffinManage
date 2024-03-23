@@ -1,0 +1,192 @@
+<!-- dashboard.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Toastr -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery (required for DataTables) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Include DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    
+
+    <!--  -->
+    <!-- Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <!-- Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <!-- Buttons extension CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css">
+
+
+<!-- Buttons extension JS -->
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.min.js"></script>
+<!-- JSZip library (required for Excel export) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<!-- PDFMake library (required for PDF export) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<!-- HTML5 export buttons (including Excel) -->
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js"></script>
+    
+    
+    
+    <style>
+   .form-control-plaintext {
+    word-wrap: break-word;
+}
+
+
+        #customer-table {
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        
+        }
+
+        
+
+        /* Style for table header */
+        #customer-table th {
+            background-color: #007bff;
+            /* Blue background color */
+            color: #fff;
+            /* White text color */
+            font-weight: bold;
+            padding: 20px;
+            text-align: left;
+        }
+        .expired{
+            background-color: #007bff;
+        }
+        .pack{
+            background-color: #c38535;
+        }
+
+        /* Style for table rows */
+        #customer-table td {
+            /* background-color: #f8f9fa; */
+            /* Light gray background color */
+            /* color: #333; */
+            /* Dark text color */
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+            /* Gray border between rows */
+        }
+
+        /* Add hover effect to table rows */
+        #customer-table tbody tr:hover {
+            background-color: #e9ecef;
+            /* Lighter gray background color on hover */
+        }
+
+        /* Style for table footer */
+        #customer-table tfoot {
+            background-color: #007bff;
+            /* Blue background color */
+            color: #fff;
+            /* White text color */
+            font-weight: bold;
+            padding: 20px;
+            text-align: left;
+        }
+
+        #customer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #customer-table th,
+        #customer-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .btn-group .btn {
+            margin-right: 5px;
+            /* Adjust the margin as needed */
+        }
+
+        /* Remove margin for the last button */
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="get-customers" data-url="{% url 'get_customers' %}"></div>
+    <div id="get-item-count" data-url="{% url 'get_item_count' %}"></div>
+    <div id="delete-customers" data-url="{% url 'index' %}"></div>
+    <div id="download" data-url="{% url 'download_file' %}"></div>
+    <div class="container mt-5">
+        
+        <h1 class="text-center mb-4">Customer Dashboard</h1>
+        <!-- Button trigger modal -->
+        {% include 'datepicker.html' %}
+        {% include 'cards.html' %}
+        <button id="add-button" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal" >
+            Add Customer
+        </button>
+
+        <!-- Include modal -->
+        {% include 'customer-modal.html' %}
+        {% include 'detail.html' %}
+        {% include 'table.html' %}
+        {% include 'confirm-modal.html' %}
+
+
+        <!-- Customer table can be added here -->
+    </div>
+
+    <!-- Include Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<script>
+
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    toastr.success("{{ message }}");
+    {% elif message.tags == 'error' %}
+    toastr.error("{{ message }}");
+    {% elif message.tags == 'warning' %}
+    toastr.warning("{{ message }}");
+    {% elif message.tags == 'info' %}
+    toastr.info("{{ message }}");
+    {% endif %}
+    {% endfor %}
+
+
+</script>
+<script src="{% static 'js/table.js' %}"></script>
+
+
+
+</html>

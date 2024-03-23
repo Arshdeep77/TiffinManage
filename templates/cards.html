@@ -1,0 +1,128 @@
+<div class="container my-4">
+    <div class="col-md-4 mb-3">
+        <div class="card pack bg-gradient text-white shadow h-100">
+            <div class="card-header">
+                <h6 id="total-roti-pack" class="m-0 font-weight-bold">Total Roti Packs of </h6>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title" id="total-roti-packs">Loading...</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-primary text-white shadow h-100">
+                <div class="card-header">
+                    <h6 id="total-roti-heading" class="m-0 font-weight-bold">Total Rotis</h6>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" id="total-rotis">Loading...</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-success text-white shadow h-100">
+                <div class="card-header">
+                    <h6 id="total-dry-heading" class="m-0 font-weight-bold">Total Dry Sabji</h6>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" id="total-dry">Loading...</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-secondary text-white shadow h-100">
+                <div class="card-header">
+                    <h6 id="total-gravy-heading" class="m-0 font-weight-bold">Total Gravy Sabji</h6>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" id="total-gravy">Loading...</h5>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // Set today's date as the default date
+        
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+        today = yyyy + '-' + mm + '-' + dd;
+        let rotisPack = $('#rotis-pack').val()
+        
+        $('#total-roti-pack').text("Total Roti packs of "+rotisPack);
+
+        $('#total-gravy-heading').text("Total Gravy for : "+today);
+        $('#total-dry-heading').text("Total Dry Sabji for : "+today);
+        $('#total-roti-heading').text("Total Roti for : "+today);
+        $('#datepicker').val(today);
+        loadData($('#datepicker').val());
+        // Event listener for datepicker change
+
+        $('#datepicker,#rotis-pack').on('change', function (e) {
+            var selectedDate = $('#datepicker').val();
+            
+        $('#total-gravy-heading').text("Total Gravy for : "+selectedDate);
+        $('#total-dry-heading').text("Total Dry Sabji for : "+selectedDate);
+        $('#total-roti-heading').text("Total Roti for : "+selectedDate);
+        let rotisPack = $('#rotis-pack').val()
+        
+        $('#total-roti-pack').text("Total Roti packs of "+rotisPack);
+            
+            loadData(selectedDate); // Load data when date is changed
+        });
+    });
+
+    function exportToExcel() {
+        // Write your export logic here
+       downloadData()
+        // For example, you can use AJAX to send a request to the server to generate the Excel file
+    }
+    function exportExpireToExcel(){
+        downloadExpiredData()   
+    }
+
+    function downloadData(){
+        let date = $('#datepicker').val();
+        var download = document.getElementById('download');
+        var url = download.getAttribute('data-url');
+        let rn=$('#export-route').val();
+        location.href = url+'?date=' + date+"&rno="+rn;
+    }
+    function downloadExpiredData(){
+        let date = $('#datepicker').val();
+        var download = document.getElementById('download');
+        var url = download.getAttribute('data-url');
+        let rn=$('#export-route').val();
+        location.href = url+'?date=' + date+"&rno="+rn+"&expire=1";
+    }
+    function loadData(date) {
+        var getCount = document.getElementById('get-item-count');
+        var url = getCount.getAttribute('data-url');
+        let rotisPack = $('#rotis-pack').val()
+        // AJAX call to fetch data from server
+        $.ajax({
+            url: url, // Provide your AJAX endpoint URL here
+            type: 'GET',
+            data: { date: date,rotis:rotisPack}, // Pass the selected date to your backend
+            success: function (response) {
+                $('#total-rotis').text(response.roti_count)
+                $('#total-dry').text(response.dry_count)
+                $('#total-gravy').text(response.gravy_count)
+                $('#total-roti-packs').text(response.tiffins_roti)
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                // Handle error
+            }
+        });
+    }
+
+</script>

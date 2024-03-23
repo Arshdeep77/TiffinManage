@@ -1,0 +1,211 @@
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCustomerModalLabel">Add Customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addCustomerForm" method="post" action="{% url 'add_customer' %}">
+          {% csrf_token %}
+          <div class="mb-3 row">
+            <label for="name" class="col-sm-3 col-form-label">Name</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="phone" class="col-sm-3 col-form-label">Phone</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="phone" name="phone" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="route" class="col-sm-3 col-form-label">Route</label>
+            <div class="col-sm-5">
+                <select class="form-select" id="route" name="route" required>
+                    <option value="">Select Route</option>
+                    {% for route in routes %}
+                    <option value="{{ route.rno }}">{{ route.rno }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <label for="route" class="col-sm-2 col-form-label">Position</label>
+            <div class="col-sm-2">
+                <div class="input-group">
+                    <input type="number" class="form-control" id="position" name="position" placeholder="Position" min="0" step="any" required>
+                </div>
+            </div>
+        </div>
+        
+        
+
+          <!-- <div class="mb-3 row">
+            <label for="Tiffin Package" class="col-sm-3 col-form-label">Tiffin Package</label>
+            <div class="col-sm-9">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="regular" class="form-label">Regular</label>
+                        <input type="number" class="form-control" id="regular" name="regular" placeholder="Regular" min="0" value="0" step="1" required>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="named" class="form-label">Named</label>
+                        <input type="number" class="form-control" id="named" name="named" placeholder="Named" min="0" value="0" step="1" required>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+          <div class="mb-3 row">
+            <label for="tiffin" class="col-sm-3 col-form-label">Tiffin Package</label>
+            <div class="col-sm-9">
+              <div id="tiffinEntries">
+                <!-- Tiffin entry template -->
+                <div class="tiffin-entry mb-3 row">
+                  <div class="col-sm-3">
+                    <label for="roti" class="form-label">Roti</label>
+                    <input type="number" class="form-control" name="roti[]" placeholder="Roti" min="0" value="0"
+                      step="1" required>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="dry" class="form-label">Dry Sabji</label>
+                    <input type="number" class="form-control" name="dry[]" placeholder="Dry Sabji" min="0" value="0"
+                      step="1" required>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="gravy" class="form-label">Gravy Sabji</label>
+                    <input type="number" class="form-control" name="gravy[]" placeholder="Gravy Sabji" min="0" value="0"
+                      step="1" required>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="rice" class="form-label">Rice</label>
+                    <input type="number" class="form-control" name="rice[]" placeholder="Rice" min="0" value="0"
+                      step="1" required>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <label for="gravy" class="form-label">Tiffin Type</label>
+                    <select class="form-select" name="tiffin[]" required>
+
+                      <option value="regular">Regular</option>
+                      <option value="custom">Named</option>
+                    </select>
+
+                  </div>
+
+                  <div class="col-sm-12 mt-2">
+                    <button type="button" class="btn btn-danger remove-tiffin-entry">Remove</button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-success" id="addTiffinEntry">Add Tiffin</button>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="payment" class="col-sm-3 col-form-label">Payment</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="payment" name="payment" placeholder="Payment" min="0"
+                  step="any" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="note" class="col-sm-3 col-form-label">Note</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="address" class="col-sm-3 col-form-label">Address</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="start_date" class="col-sm-3 col-form-label">Start Date</label>
+            <div class="col-sm-4">
+              <input type="date" class="form-control" id="start_date" name="start_date" required>
+            </div>
+            <label for="end_date" class="col-sm-1 col-form-label">End Date</label>
+            <!-- Reduced col-sm size for end date label -->
+            <div class="col-sm-4">
+              <input type="date" class="form-control" id="end_date" name="end_date" required>
+            </div>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    // Hide tiffin entry section initially
+    $("#tiffinEntries").hide();
+
+    // Add tiffin entry
+    $("#addTiffinEntry").click(function () {
+
+      if (!$("#tiffinEntries").is(":visible")) {
+        // Show the tiffin entry section
+        $("#tiffinEntries").show();
+        updateRemoveButtons();
+        return
+      }
+      var tiffinEntry = $(".tiffin-entry").first().clone();
+      tiffinEntry.find("input[type='number']").val(0);
+      $("#tiffinEntries").append(tiffinEntry);
+      updateRemoveButtons();
+    });
+
+    // Remove tiffin entry
+    $(document).on("click", ".remove-tiffin-entry", function () {
+      $(this).closest(".tiffin-entry").remove();
+      updateRemoveButtons();
+    });
+
+    // Function to update remove button states
+    function updateRemoveButtons() {
+      var entries = $(".tiffin-entry");
+      if (entries.length === 1) {
+        entries.find(".remove-tiffin-entry").prop("disabled", true);
+      } else {
+        entries.find(".remove-tiffin-entry").prop("disabled", false);
+      }
+    }
+
+    // Initial state setup
+    updateRemoveButtons();
+
+    // Form submission
+    $("#addCustomerForm").submit(function (event) {
+      event.preventDefault();
+      var confirmed = confirm("Please verify that the payment entered is correct .\n Are you sure you want to submit?");
+      if(!confirmed){
+        return false;
+      }
+      var tiffinData = [];
+      $(".tiffin-entry").each(function () {
+        console.log($(this).find("input[name='roti[]']").val(), '------');
+        var roti = $(this).find("input[name='roti[]']").val();
+        var dry = $(this).find("input[name='dry[]']").val();
+        var gravy = $(this).find("input[name='gravy[]']").val();
+        var rice = $(this).find("input[name='rice[]']").val();
+        var tiffin = $(this).find("select[name='tiffin[]']").val();
+
+        var entry = { roti: roti, dry: dry, gravy: gravy,rice:rice, type: tiffin };
+        tiffinData.push(entry);
+      });
+
+      // Add tiffin data to a hidden input field
+      $("<input>").attr("type", "hidden").attr("name", "tiffin_data").attr("value", JSON.stringify(tiffinData)).appendTo("#addCustomerForm");
+
+      // Now submit the form
+      this.submit();
+    });
+  });
+</script>

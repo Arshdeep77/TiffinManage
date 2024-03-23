@@ -1,0 +1,60 @@
+<!-- datepicker.html -->
+<style>
+    .datepicker-container {
+        display: inline-block;
+        width: auto; /* Adjust the width according to your preference */
+        margin-right: 10px; /* Adjust the margin according to your preference */
+    }
+    .export-button {
+        background-color: #0b6f3b;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .export-expire-button {
+        background-color: #e85b0f;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .export-button:hover {
+        background-color: #93a4b7;
+    }
+    .export-expire-button:hover {
+        background-color: #93a4b7;
+    }
+</style>
+
+<div class="datepicker-container">
+    <label for="datepicker" class="small">Select Date:</label>
+    <input type="date" id="datepicker" class="form-control form-control-sm">
+</div>
+
+<div class="datepicker-container">
+    <label for="export-route" class="small">Export Route:</label>
+    <select id="export-route" class="form-select form-select-sm">
+        <option value="all">All</option>
+        {% for route in routes %}
+            <option value="{{ route.rno }}">{{ route.rno }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+
+<button class="export-button" id="export-button" onclick="exportToExcel()">Export to Excel</button>
+<button class="export-expire-button " id="export-expire-button" onclick="exportExpireToExcel()">Export Expired to Excel</button>
+<br>
+<div class="datepicker-container">
+    <label for="export-route" class="small">Count roti packs of :</label>
+    <div class="input-group">
+        <input type="number" class="form-control" id="rotis-pack" name="rotis-pack" value="1" min="0" step="any" required>
+    </div>
+</div>
+
